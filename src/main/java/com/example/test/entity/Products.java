@@ -6,7 +6,12 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class Products {
+
     private String name;
-    private String content;
+    private double price;
+    private int contractCount;
+    private String createdAt;
+    private String notes;
+
 }

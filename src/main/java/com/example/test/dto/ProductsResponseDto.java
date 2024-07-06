@@ -1,17 +1,28 @@
 package com.example.test.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import static lombok.AccessLevel.PROTECTED;
+import com.example.test.entity.Products;
+import lombok.*;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
-public class PostResponseDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class ProductsResponseDto {
+
     private String name;
-    private String content;
+    private double price;
+    private int contractCount;
+    private String createdAt;
+    private String notes;
+
+    public static ProductsResponseDto fromEntity(Products products) {
+        return ProductsResponseDto.builder()
+                .name(products.getName())
+                .contractCount(products.getContractCount())
+                .price(products.getPrice())
+                .createdAt(products.getCreatedAt())
+                .notes(products.getNotes())
+                .build();
+    }
+
 }

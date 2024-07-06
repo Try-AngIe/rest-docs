@@ -1,43 +1,50 @@
 package com.example.test.controller;
 
-import com.example.test.dto.PostRequestDto;
-import com.example.test.dto.PostResponseDto;
-import com.example.test.entity.Post;
+import com.example.test.dto.ProductsResponseDto;
+import com.example.test.entity.Products;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
-public class PostController {
+@RequestMapping("/api/v1/vendor/products")
+public class ProductsController {
 
-    @GetMapping("/post")
-    public ResponseEntity getPost() {
-        Post post = buildPost("GET 테스트1", "GET 테스트1");
-        PostResponseDto postResponseDto = buildResponseDto(post);
-        return ResponseEntity.ok(postResponseDto);
-    }
+    private List<Products> productsList = Arrays.asList(
+            Products.builder().name("제목1").price(1000.0).contractCount(5).createdAt("2024-07-07").notes("내용1").build(),
+            Products.builder().name("제목2").price(2000.0).contractCount(10).createdAt("2024-07-08").notes("내용2").build(),
+            Products.builder().name("제목3").price(3000.0).contractCount(15).createdAt("2024-07-09").notes("내용3").build()
+    );
 
-    @PostMapping("/post")
-    public ResponseEntity createPost(@RequestBody PostRequestDto postRequestDto) {
-        Post post = buildPost(postRequestDto.getName(), postRequestDto.getContent());
-        PostResponseDto postResponseDto = buildResponseDto(post);
-        return ResponseEntity.ok(postResponseDto);
-    }
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getProducts(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "2") int size) {
+        int start = page * size;
+        int end = Math.min((page + 1) * size, productsList.size());
 
-    private static Post buildPost(String name, String content) {
-        return  Post.builder()
-                .name(name)
-                .content(content)
-                .build();
-    }
+        if (start > productsList.size()) {
+            return ResponseEntity.ok(Map.of(
+                    "page", page,
+                    "size", size,
+                    "totalPage", (productsList.size() + size - 1) / size,
+                    "totalCount", productsList.size(),
+                    "data", Collections.emptyList()
+            ));
+        }
 
-    private static PostResponseDto buildResponseDto(Post post) {
-        PostResponseDto postResponseDto = PostResponseDto.builder()
-                .name(post.getName())
-                .content(post.getContent())
-                .build();
-        return postResponseDto;
+        List<ProductsResponseDto> productsResponseList = this.productsList.subList(start, end).stream()
+                .map(ProductsResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("page", page);
+        response.put("size", size);
+        response.put("totalPage", (this.productsList.size() + size - 1) / size);
+        response.put("totalCount", this.productsList.size());
+        response.put("data", productsResponseList);
+
+        return ResponseEntity.ok(response);
     }
 }

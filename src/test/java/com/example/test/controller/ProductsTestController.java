@@ -29,7 +29,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 @ExtendWith({RestDocumentationExtension.class})
 @AutoConfigureMockMvc
 @SpringBootTest
-class ProductsControllerTest {
+class ProductsTestController {
 
     @Autowired
     MockMvc mockMvc;
@@ -77,4 +77,5 @@ class ProductsControllerTest {
                         )
                 ));
     }
+
 }
