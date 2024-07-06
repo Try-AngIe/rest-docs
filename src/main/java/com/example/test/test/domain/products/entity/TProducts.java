@@ -1,4 +1,4 @@
-package com.example.test.entity;
+package com.example.test.test.domain.products.entity;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Products {
+public class TProducts {
 
     private String name;
     private double price;

@@ -1,4 +1,4 @@
-package com.example.test.controller;
+package com.example.test.domain.products.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 @ExtendWith({RestDocumentationExtension.class})
 @AutoConfigureMockMvc
 @SpringBootTest
-class ProductsTestController {
+class TProductsTestController {
 
     @Autowired
     MockMvc mockMvc;
