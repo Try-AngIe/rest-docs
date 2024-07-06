@@ -1,6 +1,5 @@
 package com.example.test.controller;
 
-import com.example.test.dto.PostRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 @ExtendWith({RestDocumentationExtension.class})
 @AutoConfigureMockMvc
 @SpringBootTest
-class PostControllerTest {
+class ProductsControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -51,53 +50,31 @@ class PostControllerTest {
     }
 
     @Test
-    void getPost() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/post").accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andDo(document("getPost",
-                        HeaderDocumentation.requestHeaders(
-                                HeaderDocumentation.headerWithName(HttpHeaders.ACCEPT).description("accept header")
-                        ),
-                        HeaderDocumentation.responseHeaders(
-                                HeaderDocumentation.headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
-                        ),
-                        PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("name").description("name of post"),
-                                PayloadDocumentation.fieldWithPath("content").description("content of post")
-                        )
-                ));
-    }
-
-    @Test
-    void createPost() throws Exception{
-        PostRequestDto requestDto = new PostRequestDto("POST 테스트1", "POST 5555");
-
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/post")
-                        .content(objectMapper.writeValueAsString(requestDto))
-                        .contentType(MediaType.APPLICATION_JSON)
+    void getProducts() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/vendor/products")
+                        .param("page", "1")
+                        .param("size", "2")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
-                .andDo(document("create Post",
+                .andDo(document("getProducts",
                         HeaderDocumentation.requestHeaders(
                                 HeaderDocumentation.headerWithName(HttpHeaders.ACCEPT).description("accept header")
-                        ),
-                        PayloadDocumentation.requestFields(
-                                PayloadDocumentation.fieldWithPath("name").description("name of post"),
-                                PayloadDocumentation.fieldWithPath("content").description("content of post")
-
                         ),
                         HeaderDocumentation.responseHeaders(
                                 HeaderDocumentation.headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("name").description("name of post"),
-                                PayloadDocumentation.fieldWithPath("content").description("content of post")
+                                PayloadDocumentation.fieldWithPath("page").description("current page number"),
+                                PayloadDocumentation.fieldWithPath("size").description("number of items per page"),
+                                PayloadDocumentation.fieldWithPath("totalPage").description("total number of pages"),
+                                PayloadDocumentation.fieldWithPath("totalCount").description("total number of products"),
+                                PayloadDocumentation.fieldWithPath("data[].name").description("name of product"),
+                                PayloadDocumentation.fieldWithPath("data[].price").description("price of product"),
+                                PayloadDocumentation.fieldWithPath("data[].contractCount").description("contract count of product"),
+                                PayloadDocumentation.fieldWithPath("data[].createdAt").description("creation date of product"),
+                                PayloadDocumentation.fieldWithPath("data[].notes").description("notes of product")
                         )
                 ));
-
-
     }
-
 }

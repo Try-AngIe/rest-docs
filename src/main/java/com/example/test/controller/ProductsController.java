@@ -16,7 +16,6 @@ public class PostController {
     public ResponseEntity getPost() {
         Post post = buildPost("GET 테스트1", "GET 테스트1");
         PostResponseDto postResponseDto = buildResponseDto(post);
-        System.out.println("Response DTO: " + postResponseDto);
         return ResponseEntity.ok(postResponseDto);
     }
 
@@ -24,7 +23,6 @@ public class PostController {
     public ResponseEntity createPost(@RequestBody PostRequestDto postRequestDto) {
         Post post = buildPost(postRequestDto.getName(), postRequestDto.getContent());
         PostResponseDto postResponseDto = buildResponseDto(post);
-        System.out.println("Response DTO: " + postResponseDto);
         return ResponseEntity.ok(postResponseDto);
     }
 
