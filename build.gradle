@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2' //1
+	id 'org.asciidoctor.jvm.convert' version '3.3.2' //1 REST Docs
 }
 
 group = 'com.example'
@@ -18,7 +18,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	asciidoctorExtensions //2
+	asciidoctorExtensions //2 REST Docs
 }
 
 repositories {
@@ -38,16 +38,27 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	//3
+	//3 REST Docs
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	// SMS
+	implementation 'net.nurigo:sdk:4.3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
+
 }
 
 test {
 	useJUnitPlatform()
-	outputs.dir snippetsDir
+	outputs.dir snippetsDir // REST Docs
 }
 
+// REST Docs
 asciidoctor {
 	inputs.dir snippetsDir
 	configurations 'asciidoctorExtensions'
@@ -60,23 +71,14 @@ asciidoctor {
 	baseDirFollowsSourceFile()
 }
 
+// REST Docs
 task copyDocs(type: Copy) {
 	dependsOn asciidoctor
 	from "${asciidoctor.outputDir}"
 	into "src/main/resources/static/docs"   // src/main/resources/static/docs로 복사
 }
 
+// REST Docs
 build {
 	dependsOn copyDocs
 }
-
-//bootJar {
-//	dependsOn asciidoctor
-//
-//	// build 경로 안에 있는 index.html을 밖으로 꺼내준다.
-//	copy {
-//		from "${asciidoctor.outputDir}"
-//		into "src/main/resources/static/docs"   // src/main/resources/static/docs로 복사
-//	}
-//
-//}
