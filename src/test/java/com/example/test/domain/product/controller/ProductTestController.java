@@ -1,4 +1,4 @@
-package com.example.test.domain.products.controller;
+package com.example.test.domain.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 @ExtendWith({RestDocumentationExtension.class})
 @AutoConfigureMockMvc
 @SpringBootTest
-class ProductsTestController {
+class ProductTestController {
 
     @Autowired
     MockMvc mockMvc;
@@ -53,27 +53,27 @@ class ProductsTestController {
     void getProducts() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/vendor/products")
                         .param("page", "1")
-                        .param("size", "2")
+                        .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document("getProducts",
                         HeaderDocumentation.requestHeaders(
-                                HeaderDocumentation.headerWithName(HttpHeaders.ACCEPT).description("accept header")
+                                HeaderDocumentation.headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더")
                         ),
                         HeaderDocumentation.responseHeaders(
-                                HeaderDocumentation.headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                HeaderDocumentation.headerWithName(HttpHeaders.CONTENT_TYPE).description("Content-Type 헤더")
                         ),
                         PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("page").description("current page number"),
-                                PayloadDocumentation.fieldWithPath("size").description("number of items per page"),
-                                PayloadDocumentation.fieldWithPath("totalPage").description("total number of pages"),
-                                PayloadDocumentation.fieldWithPath("totalCount").description("total number of products"),
-                                PayloadDocumentation.fieldWithPath("data[].name").description("name of product"),
-                                PayloadDocumentation.fieldWithPath("data[].price").description("price of product"),
-                                PayloadDocumentation.fieldWithPath("data[].contractCount").description("contract count of product"),
-                                PayloadDocumentation.fieldWithPath("data[].createdAt").description("creation date of product"),
-                                PayloadDocumentation.fieldWithPath("data[].notes").description("notes of product")
+                                PayloadDocumentation.fieldWithPath("page").description("현재 페이지 번호"),
+                                PayloadDocumentation.fieldWithPath("size").description("페이지당 항목 수"),
+                                PayloadDocumentation.fieldWithPath("totalPage").description("총 페이지 수"),
+                                PayloadDocumentation.fieldWithPath("totalCount").description("총 제품 수"),
+                                PayloadDocumentation.fieldWithPath("data[].name").description("제품 이름"),
+                                PayloadDocumentation.fieldWithPath("data[].price").description("제품 가격"),
+                                PayloadDocumentation.fieldWithPath("data[].contractCount").description("제품 계약 건수"),
+                                PayloadDocumentation.fieldWithPath("data[].createdAt").description("제품 생성 날짜"),
+                                PayloadDocumentation.fieldWithPath("data[].notes").description("제품 노트")
                         )
                 ));
     }

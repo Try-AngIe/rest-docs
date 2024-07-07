@@ -524,7 +524,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="GET-POST_http_request"><a class="link" href="#GET-POST_http_request">Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/vendor/products?page=1&amp;size=2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/vendor/products?page=1&amp;size=10 HTTP/1.1
 Accept: application/json
 Host: localhost</code></pre>
 </div>
@@ -536,19 +536,31 @@ Host: localhost</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 231
+Content-Length: 516
 
 {
   "page" : 1,
-  "size" : 2,
-  "totalPage" : 2,
-  "totalCount" : 3,
+  "size" : 10,
+  "totalPage" : 150,
+  "totalCount" : 1496,
   "data" : [ {
-    "name" : "제목3",
-    "price" : 3000.0,
-    "contractCount" : 15,
-    "createdAt" : "2024-07-09",
-    "notes" : "내용3"
+    "name" : "상품 1",
+    "price" : 10.0,
+    "contractCount" : 1,
+    "createdAt" : "2024-01-01",
+    "notes" : "Note 1"
+  }, {
+    "name" : "상품 2222222",
+    "price" : 20.0,
+    "contractCount" : 2,
+    "createdAt" : "2024-01-02",
+    "notes" : "Note 2"
+  }, {
+    "name" : "상품 3",
+    "price" : 30.0,
+    "contractCount" : 3,
+    "createdAt" : "2024-01-02",
+    "notes" : "Note 3"
   } ]
 }</code></pre>
 </div>
@@ -561,7 +573,7 @@ Content-Length: 231
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-07-07 06:24:29 +0900
+Last updated 2024-07-07 13:35:53 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
