@@ -1,47 +1,136 @@
 package com.example.test.test.domain.product.controller;
 
-import com.example.test.test.domain.product.dto.TProductItemInfo;
-import com.example.test.test.domain.product.dto.TProductItemList;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.test.test.domain.product.dto.TProductSaveReq;
+import com.example.test.test.domain.product.dto.TProductDto;
+import com.example.test.test.domain.product.dto.TProductFindAllByConditionRes;
+import com.example.test.test.domain.product.dto.TProductUpdateReq;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/vendor/products")
+@RequestMapping("/api/v1/vendor/product")
 public class TProductController {
 
-    @GetMapping
-    public TProductItemList getProducts(@RequestParam int page, @RequestParam int size) {
-        // 테스트용 더미 데이터 생성 (실제 데이터는 여기서 DB 등에서 가져와야 함)
-        List<TProductItemInfo> dummyData = createDummyData(page, size);
-
-        // Pagination 정보 생성 (실제 로직에 따라 계산 필요)
-        int totalPage = 150;
-        int totalCount = 1496;
-
-        // Response 객체 생성
-        TProductItemList response = new TProductItemList();
-        response.setPage(page);
-        response.setSize(size);
-        response.setTotalPage(totalPage);
-        response.setTotalCount(totalCount);
-        response.setData(dummyData);
-
-        return response;
+    // 초기화
+    public TProductController() {
+        initData();
     }
 
-    // 테스트용 더미 데이터 생성 메서드 (실제 데이터베이스 연동으로 대체해야 함)
-    private List<TProductItemInfo> createDummyData(int page, int size) {
-        // 여기서는 간단하게 더미 데이터 생성 예시를 보여줍니다.
-        List<TProductItemInfo> dummyData = List.of(
-                new TProductItemInfo("상품 1", 10.0, 1, "2024-01-01", "Note 1"),
-                new TProductItemInfo("상품 2222222", 20.0, 2, "2024-01-02", "Note 2"),
-                new TProductItemInfo("상품 3", 30.0, 3, "2024-01-02", "Note 3")
-                // 필요한 만큼 데이터 추가
+    // 상품 리스트
+    private final List<TProductDto> productList = new ArrayList<>();
+
+    // 테스트용 더미 데이터 생성 (조회시 등록하지않으나 있다고 가정하고 하나 넣어야함 | 실제 DB 연동으로 대체해야 함)
+    public void initData() {
+
+        // 테스트에서 중복 실행 방지 초기화
+        productList.clear();
+        List<TProductDto> initData = List.of(
+                new TProductDto(1L, 1001L, "상품 조회용 데이터1", 10.0, 10, "2024-01-01 11:11:11", "Null", "Null", "비고 1", "STATUS1"),
+                new TProductDto(2L, 1002L, "상품 조회용 데이터2", 20.0, 22, "2024-01-02 11:11:11", "2024-01-01 11:11:11", "2024-01-01", "비고 2", "STATUS2")
         );
-        return dummyData;
+
+        // 더미데이터 세팅
+        productList.addAll(initData);
+
     }
+
+    // 상품 목록 조회
+    @GetMapping
+    public TProductFindAllByConditionRes findAllProductByCondition(@RequestParam int page, @RequestParam int offset) {
+
+        // /api/v1/vendor/products?page=1&offset=10
+        // 페이지네이션 이외에 정렬, 필터, 검색 기능 염두해야 함
+        // 페이지네이션과 정렬, 필터링 기능을 구현해야 하지만 여기서는 간단히 더미 데이터를 반환
+        List<TProductDto> data = new ArrayList<>(productList);
+
+        // Pagination (실제 로직에 따라 계산 필요)
+        int totalPage = 100;
+        int totalCount = 1000;
+
+        TProductFindAllByConditionRes tProductFindAllByConditionRes = new TProductFindAllByConditionRes();
+        tProductFindAllByConditionRes.setPage(page);
+        tProductFindAllByConditionRes.setOffset(offset);
+        tProductFindAllByConditionRes.setTotalPage(totalPage);
+        tProductFindAllByConditionRes.setTotalCount(totalCount);
+        tProductFindAllByConditionRes.setData(data);
+
+        return tProductFindAllByConditionRes;
+
+    }
+
+    // 상품 등록
+    @PostMapping
+    public TProductDto saveProduct(@RequestBody TProductSaveReq tProductSaveReq) {
+
+        // 새로 등록할 상품
+        TProductDto newProduct = new TProductDto(
+                tProductSaveReq.getId(),
+                tProductSaveReq.getVendorId(),
+                tProductSaveReq.getName(),
+                tProductSaveReq.getPrice(),
+                0, // 이건 DB에서 알아서 할듯
+                tProductSaveReq.getCreatedDateTime(),
+                null, // 이건 DB에서 알아서 할듯
+                null, // 이건 DB에서 알아서 할듯
+                tProductSaveReq.getMemo(),
+                "STATUS1" // 이건 DB에서 알아서 할듯
+        );
+
+        productList.add(newProduct);
+
+        return newProduct;
+    }
+
+    // 상품 상세 조회
+    @GetMapping("/{PRODUCT_ID}")
+    public TProductDto findProductById(@PathVariable("PRODUCT_ID") Long productId) {
+
+        // 람다식으로 해당 상품아이디 매핑
+        // 실제 코드에선 DTO를 분리해서 해야하나 현재 기본 TProductDto에 데이터를 강제로 주입시키기 때문에 애로사항이 있음
+        TProductDto product = productList.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        return product;
+    }
+
+    // 상품 수정
+    @PutMapping("/{PRODUCT_ID}")
+    public TProductDto updateProduct(@PathVariable("PRODUCT_ID") Long productId, @RequestBody TProductUpdateReq tProductUpdateReq) {
+
+        // 람다식으로 해당 상품아이디 매핑
+        TProductDto updatedProduct = productList.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        // 상품 수정할 정보
+        updatedProduct.setName(tProductUpdateReq.getName());
+        updatedProduct.setPrice(tProductUpdateReq.getPrice());
+        updatedProduct.setMemo(tProductUpdateReq.getMemo());
+        updatedProduct.setUpdatedDateTime("2024-01-01 11:11:11"); // 이건 DB에서 알아서 할듯
+
+        return updatedProduct;
+    }
+
+    // 상품 삭제
+    @DeleteMapping("/{PRODUCT_ID}")
+    public TProductDto deleteProduct(@PathVariable("PRODUCT_ID") Long productId) {
+
+        // 람다식으로 해당 상품아이디 매핑
+        TProductDto product = productList.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        // 실제 삭제 대신 상태 업데이트
+        product.setStatus("DELETED");
+        product.setDeletedDate("2024-01-01"); // 이건 DB에서 알아서 할듯
+
+        return product;
+    }
+
 }

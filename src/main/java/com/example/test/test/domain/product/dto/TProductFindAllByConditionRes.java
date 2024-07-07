@@ -7,10 +7,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TProductItemList {
+public class TProductFindAllByConditionRes { // 상품 목록 조회(조건에 따른)
+
     private int page;
-    private int size;
+    private int offset;
     private int totalPage;
     private int totalCount;
-    private List<TProductItemInfo> data;
+    private List<TProductDto> data; // 페이지네이션 데이터
+
 }
